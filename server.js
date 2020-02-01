@@ -21,7 +21,7 @@ app.get("/notes", function (req, res) {
 
 // API Notes route
 app.get("/api/notes", function (req, res) {
-    var jsonContent = getJSONData();
+    var jsonContent = getNoteJSON();
     return res.json(jsonContent);
     // res.sendFile(path.join(__dirname, "db", "db.json"));
 });
@@ -41,25 +41,24 @@ app.post("/api/notes", function (req, res) {
     res.json(jsonContent);
 });
 
-// DELETE implementation
+// Delete a note based on the id
 app.delete("/api/notes/:id",
     function (req, res) {
         console.log("Deleting id:" + req.params.id);
-        let jsonContent = getNoteJSON();
-        let updatedJSON = jsonContent.filter(function (definition) {
-            return definition.id.toLowerCase() !== req.params.id.toLowerCase();
+        var jsonContent = getNoteJSON();
+        var updatedJSON = jsonContent.filter(function (data) {
+            return data.id != req.params.id;
         });
         fs.writeFileSync(path.join(__dirname, "db", "db.json"), JSON.stringify(updatedJSON));
-        res.json(updatedJSON); //sending the updated response back to client app.
+        res.json(updatedJSON);
     });
 
 function getNoteJSON() {
-    let contents = fs.readFileSync(path.join(__dirname, "db", "db.json"));
+    var contents = fs.readFileSync(path.join(__dirname, "db", "db.json"));
     return JSON.parse(contents);
 }
 
-// Starts the server to begin listening
-// =============================================================
+// Server starts listening 
 app.listen(PORT, function () {
     console.log("App listening on PORT " + PORT);
 });
