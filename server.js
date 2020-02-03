@@ -10,6 +10,9 @@ var PORT = 8080;
 // Data parsing using express app
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+//Use the express.static built-in middleware function in Express.
+//To serve static files such as images, CSS files, HTML files, and JavaScript files
 app.use(express.static("public"));
 
 // Routes section-----------------------------------------------
@@ -34,6 +37,8 @@ app.get("*", function (req, res) {
 // Create New Note a new note using fs and JSON
 app.post("/api/notes", function (req, res) {
     var newNote = req.body;
+    //
+    newNote.id = Date.now();
     console.log(newNote);
     var jsonContent = getNoteJSON();
     jsonContent.push(newNote);
@@ -44,7 +49,7 @@ app.post("/api/notes", function (req, res) {
 // Delete a note based on the id
 app.delete("/api/notes/:id",
     function (req, res) {
-        console.log("Deleting id:" + req.params.id);
+        // console.log("Deleting id:" + req.params.id);
         var jsonContent = getNoteJSON();
         var updatedJSON = jsonContent.filter(function (data) {
             return data.id != req.params.id;
@@ -52,6 +57,7 @@ app.delete("/api/notes/:id",
         fs.writeFileSync(path.join(__dirname, "db", "db.json"), JSON.stringify(updatedJSON));
         res.json(updatedJSON);
     });
+
 
 function getNoteJSON() {
     var contents = fs.readFileSync(path.join(__dirname, "db", "db.json"));
