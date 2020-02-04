@@ -2,6 +2,7 @@
 var express = require("express");
 var path = require("path");
 var fs = require("fs");
+var uuidv1 = require('uuid/v1');
 
 // Set up for use of the Express App
 var app = express();
@@ -37,19 +38,18 @@ app.get("*", function (req, res) {
 // Create New Note a new note using fs and JSON
 app.post("/api/notes", function (req, res) {
     var newNote = req.body;
-    //
-    newNote.id = Date.now();
+    //Creating unique ID using the uuid package
+    newNote.id = uuidv1();
     console.log(newNote);
-    var jsonContent = getNoteJSON();
-    jsonContent.push(newNote);
-    fs.writeFileSync(path.join(__dirname, "db", "db.json"), JSON.stringify(jsonContent));
-    res.json(jsonContent);
+    var noteJson = getNoteJSON();
+    noteJson.push(newNote);
+    fs.writeFileSync(path.join(__dirname, "db", "db.json"), JSON.stringify(noteJson));
+    res.json(noteJson);
 });
 
 // Delete a note based on the id
 app.delete("/api/notes/:id",
     function (req, res) {
-        // console.log("Deleting id:" + req.params.id);
         var jsonContent = getNoteJSON();
         var updatedJSON = jsonContent.filter(function (data) {
             return data.id != req.params.id;
