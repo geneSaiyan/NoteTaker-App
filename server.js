@@ -6,7 +6,7 @@ var uuidv1 = require('uuid/v1');
 
 // Set up for use of the Express App
 var app = express();
-var PORT = 8080;
+var PORT = process.env.PORT || 3000;
 
 // Data parsing using express app
 app.use(express.urlencoded({ extended: true }));
